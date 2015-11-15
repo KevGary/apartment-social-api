@@ -5,10 +5,13 @@ var router = express.Router();
 var pg = require('pg');
 var conString = process.env.DATABASE_URL;
 
+//zillow data scrape
+// var apartmentIds = require('/public/javascripts/zillow-data-scrape.js');
 
 //Users
 //get all
 router.get('/users', function(req, res, next) {
+console.log(apartmentIds)
   pg.connect(conString, function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
