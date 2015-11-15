@@ -4,14 +4,7 @@ info:
   title: ApartmentSocial API
   description: >
     #### Backend for ApartmentSocial
-basePath: /api/v1
-# parameters:
-#   year:
-#     name: year
-#     in: path
-#     description: The year of the memories
-#     type: integer
-#     required: true
+basePath: /
 parameters:
   id:
     name: id
@@ -78,6 +71,16 @@ definitions:
             details:
               type: string
 
+              UsersCollection:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/UsersResource'
+
 
   ApartmentsCollection:
     type: object
@@ -101,7 +104,7 @@ definitions:
       type:
         type: string
         enum:
-        - user
+        - apartment
       id:
         type: integer
       attributes:
@@ -114,6 +117,128 @@ definitions:
       name:
         type: string
       apartment_number:
+        type: integer
+      street_address:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zip_code:
+        type: integer
+  Error:
+    type: object
+    properties:
+      error:
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type: string
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+            title:
+              type: string
+            details:
+              type: string
+
+  LeasesCollection:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/LeasesResource'
+  LeaseDocument:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        $ref: '#/definitions/LeasesResource'
+  LeasesResource:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+        - lease
+      id:
+        type: integer
+      attributes:
+        $ref: '#/definitions/Lease'
+      links:
+        $ref: '#/definitions/Links'
+  Lease:
+    type: object
+    properties:
+      user_id:
+        type: integer
+      apartment_id:
+        type: integer
+  Error:
+    type: object
+    properties:
+      error:
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type: string
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+            title:
+              type: string
+            details:
+              type: string
+
+
+
+  MessagesCollection:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/MessagesResource'
+  MessageDocument:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        $ref: '#/definitions/MessagesResource'
+  MessagesResource:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+        - message
+      id:
+        type: integer
+      attributes:
+        $ref: '#/definitions/Message'
+      links:
+        $ref: '#/definitions/Links'
+  Message:
+    type: object
+    properties:
+      content:
+        type: string
+      timestamp:
         type: string
   Error:
     type: object
@@ -134,6 +259,7 @@ definitions:
               type: string
             details:
               type: string
+
 paths:
   '/users':
     get:
@@ -198,49 +324,126 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/UsersCollection'
-  '/apartments'
+
+  '/apartments':
     get:
       description: >
-        Get all users
+        Get all apartments
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/ApartmentsCollection'
+            $ref: '#/definitions/ApartmentsCollection' 
+    post:
+      description: >
+        Posts a new apartment
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ApartmentDocument'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/Error'
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - apartment
+                  attributes:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      apartment_number:
+                        type: integer  
+                      street_address:
+                        type: string
+                      city:
+                        type: string
+                      state:
+                        type: string
+                      zip_code:
+                        type: integer
+  '/apartments/{id}':
+    get:
+      parameters:
+        - $ref: '#/parameters/id'
+      description: >
+        Get one apartment
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ApartmentsCollection'     
+  '/leases':
+    get:
+      description: >
+        Get all leases
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/LeasesCollection'
 
-    # '/apartments':
-    #   get:
-    #     description: >
-    #       Get all users
-    #     responses:
-    #       '200':
-    #         description: Success
-    #         schema:
-    #           $ref: '#/definitions/UsersCollection'
-  # '/memories/{year}':
-  #   get:
-  #     parameters:
-  #       - $ref: '#/parameters/year'
-  #     description: >
-  #       Lists all memories for a given year
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         schema:
-  #           $ref: '#/definitions/MemoryCollection'
-  # '/memories/years':
-  #   get:
-  #     description: >
-  #       Lists the unique years
-  #     responses:
-  #       '200':
-  #         description: Success
-  #         schema:
-  #           type: object
-  #           properties:
-  #             links:
-  #               $ref: '#/definitions/Links'
-  #             data:
-  #               type: array
-  #               items:
-  #                 type: integer
+  '/messages':
+    get:
+      description: >
+        Get all messages
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/MessagesCollection'
+    post:
+      description: >
+        Posts a new message
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/MessageDocument'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/Error'
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - message
+                  attributes:
+                    type: object
+                    properties:
+                      content:
+                        type: string
+                      timestamp:
+                        type: string
+  '/messages/{id}':
+    get:
+      parameters:
+        - $ref: '#/parameters/id'
+      description: >
+        Get one message
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/MessagesCollection'    
