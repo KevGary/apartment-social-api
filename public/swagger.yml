@@ -1,0 +1,246 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: ApartmentSocial API
+  description: >
+    #### Backend for ApartmentSocial
+basePath: /api/v1
+# parameters:
+#   year:
+#     name: year
+#     in: path
+#     description: The year of the memories
+#     type: integer
+#     required: true
+parameters:
+  id:
+    name: id
+    in: path
+    description: id of user
+    type: integer
+    required: true
+definitions:
+  Links:
+    type: object
+  UsersCollection:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/UsersResource'
+  UserDocument:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        $ref: '#/definitions/UsersResource'
+  UsersResource:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+        - user
+      id:
+        type: integer
+      attributes:
+        $ref: '#/definitions/User'
+      links:
+        $ref: '#/definitions/Links'
+  User:
+    type: object
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+  Error:
+    type: object
+    properties:
+      error:
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type: string
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+            title:
+              type: string
+            details:
+              type: string
+
+
+  ApartmentsCollection:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/ApartmentsResource'
+  ApartmentDocument:
+    type: object
+    properties:
+      links:
+        $ref: '#/definitions/Links'
+      data:
+        $ref: '#/definitions/ApartmentsResource'
+  ApartmentsResource:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+        - user
+      id:
+        type: integer
+      attributes:
+        $ref: '#/definitions/Apartment'
+      links:
+        $ref: '#/definitions/Links'
+  Apartment:
+    type: object
+    properties:
+      name:
+        type: string
+      apartment_number:
+        type: string
+  Error:
+    type: object
+    properties:
+      error:
+        type: array
+        items:
+          type: object
+          properties:
+            status:
+              type: string
+            source:
+              type: object
+              properties:
+                pointer:
+                  type: string
+            title:
+              type: string
+            details:
+              type: string
+paths:
+  '/users':
+    get:
+      description: >
+        Get all users
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/UsersCollection'
+    post:
+      description: >
+        Posts a new user
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/UserDocument'
+        '400':
+          description: Validation error
+          schema:
+            $ref: '#/definitions/Error'
+      parameters:
+        - name: Payload
+          in: body
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - user
+                  attributes:
+                    type: object
+                    properties:
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+  '/users/{id}':
+    get:
+      parameters:
+        - $ref: '#/parameters/id'
+      description: >
+        Get one user
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/Users'
+  '/users/{id}':
+    get:
+      parameters:
+        - $ref: '#/parameters/id'
+      description: >
+        Get one user
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/UsersCollection'
+  '/apartments'
+    get:
+      description: >
+        Get all users
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/ApartmentsCollection'
+
+    # '/apartments':
+    #   get:
+    #     description: >
+    #       Get all users
+    #     responses:
+    #       '200':
+    #         description: Success
+    #         schema:
+    #           $ref: '#/definitions/UsersCollection'
+  # '/memories/{year}':
+  #   get:
+  #     parameters:
+  #       - $ref: '#/parameters/year'
+  #     description: >
+  #       Lists all memories for a given year
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         schema:
+  #           $ref: '#/definitions/MemoryCollection'
+  # '/memories/years':
+  #   get:
+  #     description: >
+  #       Lists the unique years
+  #     responses:
+  #       '200':
+  #         description: Success
+  #         schema:
+  #           type: object
+  #           properties:
+  #             links:
+  #               $ref: '#/definitions/Links'
+  #             data:
+  #               type: array
+  #               items:
+  #                 type: integer
