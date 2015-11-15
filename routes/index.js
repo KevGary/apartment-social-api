@@ -11,7 +11,7 @@ var conString = process.env.DATABASE_URL;
 //Users
 //get all
 router.get('/users', function(req, res, next) {
-console.log(apartmentIds)
+// console.log(apartmentIds)
   pg.connect(conString, function(err, client, done) {
     if (err) {
       return console.error('error fetching client from pool', err);
@@ -85,8 +85,8 @@ router.post('/apartments', function(req, res, next) {
       return console.error('error fetching client from pool', err);
     }
     console.log("connected to database");
-    client.query('INSERT INTO apartments(name, apartment_number, street_address, city, state, zip_code) VALUES($1, $2, $3, $4, $5, $6) returning id', 
-      [req.body.data.attributes.name, req.body.data.attributes.apartment_number, req.body.data.attributes.street_address, req.body.data.attributes.city, req.body.data.attributes.state,
+    client.query('INSERT INTO apartments(name, street_address, city, state, zip_code) VALUES($1, $2, $3, $4, $5) returning id', 
+      [req.body.data.attributes.name, req.body.data.attributes.street_address, req.body.data.attributes.city, req.body.data.attributes.state,
       req.body.data.attributes.zip_code], function(err, result) {
       done();
       if(err) {

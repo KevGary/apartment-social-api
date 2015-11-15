@@ -116,8 +116,6 @@ definitions:
     properties:
       name:
         type: string
-      apartment_number:
-        type: integer
       street_address:
         type: string
       city:
@@ -363,9 +361,7 @@ paths:
                     type: object
                     properties:
                       name:
-                        type: string
-                      apartment_number:
-                        type: integer  
+                        type: string 
                       street_address:
                         type: string
                       city:
